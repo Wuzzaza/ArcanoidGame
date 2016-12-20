@@ -27,7 +27,7 @@ public:
             x = 400;
             y = 500;
             angle = -45.0;
-            speed = 5;
+            speed = 3;
         }
         int next_x(){
             return this->x + (cos(3.14 * angle / 180) * speed);
@@ -43,16 +43,37 @@ public:
         }
     };
 
+    struct Pad{
+        int x, y;
+        Pad (int x, int y){
+            this->x = x;
+            this->y = y;
+        }
+
+        void moveLeft(){
+            if (this->x > 20) this->x += -20;
+        }
+
+        void moveRight(){
+            if (this->x < 680) this->x += 20;
+        }
+
+    };
+
+
+
 public:
     GameField(QObject *parent);
     ~GameField();
 
     QList<Brick> brickList;
     Ball *ball;
+    Pad *pad;
 
     void update();
     void checkBorders();
     void checkCollisions();
+    void checkPadCollisions();
     bool isInMid(int n1, int mid, int n2);
 
 

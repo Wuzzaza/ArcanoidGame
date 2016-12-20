@@ -22,7 +22,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    if (!gameWindow) gameWindow = new GameWindow();
+    gameWindow = new GameWindow(this);
     gameWindow->show();
     this->hide();
 

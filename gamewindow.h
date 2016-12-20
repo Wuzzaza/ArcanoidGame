@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGraphicsScene>
 #include <QTimer>
+#include <QKeyEvent>
 
 #include "gamefield.h"
 
@@ -16,16 +17,20 @@ class GameWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit GameWindow(QWidget *parent = 0);
+    GameWindow(QWidget *parent);
     ~GameWindow();
+    void keyPressEvent(QKeyEvent *k);
 
 private:
+    QWidget *parent;
     Ui::GameWindow *ui;
     QGraphicsScene *mainScene;
     GameField *gameField;
     QTimer gameTimer;
+    bool gameIsPaused;
 
     void draw();
+    void closeEvent(QCloseEvent *event);
 
  private slots:
     void update();

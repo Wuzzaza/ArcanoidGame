@@ -10,6 +10,7 @@ GameField::GameField(QObject *parent):QObject(parent)
     }
 
     ball = new Ball;
+    pad = new Pad(350, 550);
 
 }
 
@@ -24,6 +25,7 @@ void GameField::update()
 {
     checkBorders();
     checkCollisions();
+    checkPadCollisions();
     ball->move();
 }
 
@@ -42,17 +44,65 @@ void GameField::checkBorders()
 void GameField::checkCollisions()
 {
     for (int i = 0; i < brickList.size(); i++){
-
+        bool collisionPerformed = false;
         if (ball->next_x()> brickList[i].x1 - 11 && ball->next_x() < brickList[i].x2 + 11 && ball->next_y()> brickList[i].y1 - 11 && ball->next_y() < brickList[i].y2 + 11){
-            if (ball->x < brickList[i].x1)ball->angle = 180 - ball->angle;
-            if (ball->x > brickList[i].x2)ball->angle = 180 - ball->angle;
 
-            if (ball->y < brickList[i].y1)ball->angle = 0 - ball->angle;
-            if (ball->y > brickList[i].y2)ball->angle = 0 - ball->angle;
+            if (ball->x < brickList[i].x1 && !collisionPerformed){
+                ball->angle = 180 - ball->angle;
+                collisionPerformed = true;
+            }
+            if (ball->x > brickList[i].x2 && !collisionPerformed){
+                ball->angle = 180 - ball->angle;
+                collisionPerformed = true;
+            }
 
-            brickList.removeAt(i);
+            if (ball->y < brickList[i].y1 && !collisionPerformed){
+                ball->angle = 0 - ball->angle;
+                collisionPerformed = true;
+            }
+            if (ball->y > brickList[i].y2 && !collisionPerformed){
+                ball->angle = 0 - ball->angle;
+                collisionPerformed = true;
+            }
+        if(brickList[i].isDestructible) brickList.removeAt(i);
+
         }
+        if (collisionPerformed) break;
     }
+
+    if (ball->angle > 360) ball->angle -= 360;
+    if (ball->angle < -360) ball->angle += 360;
+}
+
+void GameField::checkPadCollisions()
+{
+
+    bool collisionPerformed = false;
+
+        if (ball->next_x()> pad->x - 11 && ball->next_x() < pad->x + 111 && ball->next_y()> pad->y - 11 && ball->next_y() < pad->y + 31){
+            if (ball->x < pad->x && !collisionPerformed){
+                ball->angle = 180 - ball->angle;
+                collisionPerformed = true;
+
+            }
+            if (ball->x > pad->x + 100 && !collisionPerformed){
+                ball->angle = 180 - ball->angle;
+                collisionPerformed = true;
+
+            }
+
+            if (ball->y < pad->y && !collisionPerformed){
+                ball->angle = 0 - ball->angle;
+                collisionPerformed = true;
+
+            }
+            if (ball->y > pad->y + 20 && !collisionPerformed){
+                ball->angle = 0 - ball->angle;
+                collisionPerformed = true;
+
+            }
+
+        }
 
     if (ball->angle > 360) ball->angle -= 360;
     if (ball->angle < -360) ball->angle += 360;
